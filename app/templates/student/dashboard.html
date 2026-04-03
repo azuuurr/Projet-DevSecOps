@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Tableau de bord — Étudiant{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+<div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900">Bonjour, {{ current_user.first_name }}</h1>
+    <p class="mt-1 text-sm text-gray-500">Voici un résumé de votre parcours académique.</p>
+</div>
+
+<div class="grid grid-cols-1 gap-6 sm:grid-cols-3 mb-8">
+    <div class="rounded-2xl bg-white p-6 shadow-sm border border-gray-200">
+        <p class="text-sm font-medium text-gray-500">Moyenne générale</p>
+        <p class="mt-2 text-3xl font-bold {% if average and average >= 10 %}text-green-600{% elif average %}text-red-600{% else %}text-gray-400{% endif %}">
+            {% if average %}{{ average }}/20{% else %}—{% endif %}
+        </p>
+    </div>
+    <div class="rounded-2xl bg-white p-6 shadow-sm border border-gray-200">
+        <p class="text-sm font-medium text-gray-500">Mes classes</p>
+        <p class="mt-2 text-3xl font-bold text-gray-900">{{ classes|length }}</p>
+    </div>
+    <div class="rounded-2xl bg-white p-6 shadow-sm border border-gray-200">
+        <p class="text-sm font-medium text-gray-500">Notes reçues</p>
+        <p class="mt-2 text-3xl font-bold text-gray-900">{{ recent_grades|length }}</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+    <!-- Classes -->
+    <div class="rounded-2xl bg-white shadow-sm border border-gray-200">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Mes classes</h2>
+        </div>
+        <ul class="divide-y divide-gray-100">
+            {% for cls in classes %}
+            <li class="px-6 py-4">
+                <span class="text-sm font-medium text-gray-900">{{ cls.name }}</span>
+                <p class="text-xs text-gray-500 mt-1">{{ cls.description or '' }}</p>
+            </li>
+            {% else %}
+            <li class="px-6 py-4 text-sm text-gray-400 italic">Aucune classe.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Notes récentes -->
+    <div class="rounded-2xl bg-white shadow-sm border border-gray-200">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Dernières notes</h2>
+            <a href="{{ url_for('student.grades') }}" class="text-sm font-medium text-blue-600 hover:text-blue-800">Voir tout</a>
+        </div>
+        <ul class="divide-y divide-gray-100">
+            {% for g in recent_grades %}
+            <li class="px-6 py-3 flex items-center justify-between">
+                <div>
+                    <span class="text-sm font-medium text-gray-900">{{ g.eval_title }}</span>
+                    <p class="text-xs text-gray-500">{{ g.subject_name }}</p>
+                </div>
+                <span class="text-sm font-bold {% if g.score >= 10 %}text-green-600{% else %}text-red-600{% endif %}">{{ g.score }}/20</span>
+            </li>
+            {% else %}
+            <li class="px-6 py-4 text-sm text-gray-400 italic">Aucune note pour l'instant.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="mt-6 flex space-x-4">
+    <a href="{{ url_for('student.grades') }}" class="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition">Toutes mes notes</a>
+    <a href="{{ url_for('student.schedule') }}" class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition">Mon emploi du temps</a>
+</div>
+</div>
+{% endblock %}

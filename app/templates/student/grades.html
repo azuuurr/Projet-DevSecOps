@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Mes notes — Étudiant{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+<div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900">Mes notes</h1>
+    <p class="mt-1 text-sm text-gray-500">Détail de toutes vos évaluations par matière.</p>
+</div>
+
+{% for sid, subject in subjects.items() %}
+<div class="mb-8">
+    <div class="flex items-center justify-between mb-3">
+        <h2 class="text-lg font-semibold text-gray-900">{{ subject.name }}</h2>
+        {% if subject.average is not none %}
+        <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium
+            {% if subject.average >= 10 %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+            Moyenne : {{ subject.average }}/20
+        </span>
+        {% endif %}
+    </div>
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Évaluation</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Date</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Coefficient</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Note</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Commentaire</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for g in subject.grades %}
+                <tr>
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ g.eval_title }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">{{ g.eval_date }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">{{ g.coefficient }}</td>
+                    <td class="px-6 py-4 text-sm font-bold {% if g.score >= 10 %}text-green-600{% else %}text-red-600{% endif %}">{{ g.score }}/20</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">{{ g.comment or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="rounded-2xl bg-white p-8 shadow-sm border border-gray-200 text-center">
+    <p class="text-gray-400 italic">Aucune note disponible pour l'instant.</p>
+</div>
+{% endfor %}
+</div>
+{% endblock %}

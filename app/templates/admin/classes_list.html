@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Classes — Administration{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+<div class="sm:flex sm:items-center sm:justify-between mb-8">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Classes</h1>
+        <p class="mt-1 text-sm text-gray-500">Gestion des classes de la plateforme.</p>
+    </div>
+    <a href="{{ url_for('admin.class_create') }}" class="mt-4 sm:mt-0 inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition">
+        + Créer une classe
+    </a>
+</div>
+
+<div class="mb-6">
+    <form method="GET" action="{{ url_for('admin.classes_list') }}" class="flex items-center space-x-3">
+        <div class="relative flex-1 max-w-md">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+            </div>
+            <input type="text" name="q" value="{{ search }}" placeholder="Rechercher une classe..." class="block w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-3 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition">
+        </div>
+        <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition">Rechercher</button>
+        {% if search %}
+        <a href="{{ url_for('admin.classes_list') }}" class="text-sm text-gray-500 hover:text-gray-700">Effacer</a>
+        {% endif %}
+    </form>
+    {% if search %}
+    <p class="mt-2 text-sm text-gray-500">{{ classes|length }} résultat(s) pour "{{ search }}"</p>
+    {% endif %}
+</div>
+
+<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {% for cls in classes %}
+    <div class="rounded-2xl bg-white p-6 shadow-sm border border-gray-200 hover:border-blue-300 hover:shadow-md transition">
+        <a href="{{ url_for('admin.class_detail', class_id=cls.id) }}">
+            <h3 class="text-lg font-semibold text-gray-900">{{ cls.name }}</h3>
+            <p class="mt-1 text-sm text-gray-500">{{ cls.description or 'Aucune description' }}</p>
+            <div class="mt-4 flex space-x-4 text-sm text-gray-500">
+                <span>{{ cls.student_count }} étudiant(s)</span>
+                <span>{{ cls.professor_count }} professeur(s)</span>
+            </div>
+        </a>
+        <div class="mt-4 flex space-x-3 border-t border-gray-100 pt-4">
+            <a href="{{ url_for('admin.class_edit', class_id=cls.id) }}" class="text-sm font-medium text-blue-600 hover:text-blue-800">Modifier</a>
+            <form method="POST" action="{{ url_for('admin.class_delete', class_id=cls.id) }}" class="inline" onsubmit="return confirm('Supprimer cette classe et toutes ses données ?');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-800">Supprimer</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+</div>
+{% endblock %}

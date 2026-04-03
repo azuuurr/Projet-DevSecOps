@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}{{ cls.name }} — Administration{% endblock %}
+
+{% block breadcrumbs %}
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4">
+    <nav class="flex text-sm text-gray-500" aria-label="Breadcrumb">
+        <a href="{{ url_for('admin.classes_list') }}" class="hover:text-blue-600">Classes</a>
+        <svg class="mx-2 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" /></svg>
+        <span class="font-medium text-gray-900">{{ cls.name }}</span>
+    </nav>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+<div class="mb-8">
+    <div class="sm:flex sm:items-center sm:justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">{{ cls.name }}</h1>
+            <p class="mt-1 text-sm text-gray-500">{{ cls.description or 'Aucune description' }}</p>
+        </div>
+        <a href="{{ url_for('admin.classes_list') }}" class="mt-4 sm:mt-0 text-sm font-medium text-gray-500 hover:text-gray-700">&larr; Retour aux classes</a>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+    <!-- Professeurs -->
+    <div class="rounded-2xl bg-white shadow-sm border border-gray-200">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Professeurs</h2>
+            <a href="{{ url_for('admin.assign_professors', class_id=cls.id) }}" class="text-sm font-medium text-blue-600 hover:text-blue-800">Gérer</a>
+        </div>
+        <ul class="divide-y divide-gray-100">
+            {% for p in professors %}
+            <li class="px-6 py-3 text-sm text-gray-700">{{ p.first_name }} {{ p.last_name }} <span class="text-gray-400">— {{ p.email }}</span></li>
+            {% else %}
+            <li class="px-6 py-4 text-sm text-gray-400 italic">Aucun professeur attribué.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Étudiants -->
+    <div class="rounded-2xl bg-white shadow-sm border border-gray-200">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Étudiants ({{ students|length }})</h2>
+            <a href="{{ url_for('admin.assign_students', class_id=cls.id) }}" class="text-sm font-medium text-blue-600 hover:text-blue-800">Gérer</a>
+        </div>
+        <ul class="divide-y divide-gray-100">
+            {% for s in students %}
+            <li class="px-6 py-3 text-sm text-gray-700">{{ s.first_name }} {{ s.last_name }} <span class="text-gray-400">— {{ s.email }}</span></li>
+            {% else %}
+            <li class="px-6 py-4 text-sm text-gray-400 italic">Aucun étudiant attribué.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Matières -->
+    <div class="rounded-2xl bg-white shadow-sm border border-gray-200">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Matières</h2>
+            <a href="{{ url_for('admin.subject_create', class_id=cls.id) }}" class="text-sm font-medium text-blue-600 hover:text-blue-800">+ Ajouter</a>
+        </div>
+        <ul class="divide-y divide-gray-100">
+            {% for sub in subjects %}
+            <li class="flex items-center justify-between px-6 py-3">
+                <span class="text-sm text-gray-700">{{ sub.name }} <span class="text-gray-400">— {{ sub.prof_first }} {{ sub.prof_last }}</span></span>
+                <form method="POST" action="{{ url_for('admin.subject_delete', subject_id=sub.id) }}" onsubmit="return confirm('Supprimer cette matière ?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="text-xs text-red-500 hover:text-red-700">Supprimer</button>
+                </form>
+            </li>
+            {% else %}
+            <li class="px-6 py-4 text-sm text-gray-400 italic">Aucune matière.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Emploi du temps -->
+    <div class="rounded-2xl bg-white shadow-sm border border-gray-200">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Emploi du temps</h2>
+            <a href="{{ url_for('admin.schedule_create', class_id=cls.id) }}" class="text-sm font-medium text-blue-600 hover:text-blue-800">+ Ajouter</a>
+        </div>
+        <ul class="divide-y divide-gray-100">
+            {% for sc in schedules %}
+            <li class="flex items-center justify-between px-6 py-3">
+                <span class="text-sm text-gray-700">
+                    <span class="font-medium">{{ sc.day_of_week }}</span> {{ sc.start_time|format_time }} - {{ sc.end_time|format_time }}
+                    <span class="text-gray-400">| {{ sc.subject_name }}{% if sc.room %} | {{ sc.room }}{% endif %}</span>
+                </span>
+                <form method="POST" action="{{ url_for('admin.schedule_delete', schedule_id=sc.id) }}" onsubmit="return confirm('Supprimer ce créneau ?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="text-xs text-red-500 hover:text-red-700">Supprimer</button>
+                </form>
+            </li>
+            {% else %}
+            <li class="px-6 py-4 text-sm text-gray-400 italic">Aucun créneau.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+</div>
+{% endblock %}

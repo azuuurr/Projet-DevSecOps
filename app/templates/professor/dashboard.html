@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Tableau de bord — Professeur{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+<div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900">Bonjour, {{ current_user.first_name }}</h1>
+    <p class="mt-1 text-sm text-gray-500">Voici vos classes et matières.</p>
+</div>
+
+<div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+    <!-- Classes -->
+    <div>
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Mes classes</h2>
+        {% for cls in classes %}
+        <a href="{{ url_for('professor.class_detail', class_id=cls.id) }}" class="block rounded-2xl bg-white p-5 shadow-sm border border-gray-200 hover:border-blue-300 hover:shadow-md transition mb-4">
+            <h3 class="font-semibold text-gray-900">{{ cls.name }}</h3>
+            <p class="mt-1 text-sm text-gray-500">{{ cls.description or 'Aucune description' }}</p>
+        </a>
+        {% else %}
+        <p class="text-sm text-gray-400 italic">Aucune classe attribuée.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Matières -->
+    <div>
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Mes matières</h2>
+        {% for sub in subjects %}
+        <a href="{{ url_for('professor.evaluations_list', subject_id=sub.id) }}" class="block rounded-2xl bg-white p-5 shadow-sm border border-gray-200 hover:border-blue-300 hover:shadow-md transition mb-4">
+            <h3 class="font-semibold text-gray-900">{{ sub.name }}</h3>
+            <p class="mt-1 text-sm text-gray-500">{{ sub.class_name }}</p>
+        </a>
+        {% else %}
+        <p class="text-sm text-gray-400 italic">Aucune matière attribuée.</p>
+        {% endfor %}
+    </div>
+</div>
+</div>
+{% endblock %}

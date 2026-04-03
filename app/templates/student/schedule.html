@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Emploi du temps — Étudiant{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+<div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900">Mon emploi du temps</h1>
+    <p class="mt-1 text-sm text-gray-500">Planning hebdomadaire de vos cours.</p>
+</div>
+
+{% set day_order = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'] %}
+
+<div class="space-y-6">
+    {% for day in day_order %}
+    {% if day in days %}
+    <div class="rounded-2xl bg-white shadow-sm border border-gray-200">
+        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 rounded-t-2xl">
+            <h2 class="text-base font-semibold text-gray-900">{{ day }}</h2>
+        </div>
+        <div class="divide-y divide-gray-100">
+            {% for s in days[day] %}
+            <div class="flex items-center px-6 py-4">
+                <div class="flex-shrink-0 w-32">
+                    <span class="text-sm font-medium text-blue-700">{{ s.start_time|format_time }} - {{ s.end_time|format_time }}</span>
+                </div>
+                <div class="ml-4 flex-1">
+                    <p class="text-sm font-medium text-gray-900">{{ s.subject_name }}</p>
+                    <p class="text-xs text-gray-500">Prof. {{ s.prof_first }} {{ s.prof_last }}{% if s.room %} — {{ s.room }}{% endif %}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+
+{% if not days %}
+<div class="rounded-2xl bg-white p-8 shadow-sm border border-gray-200 text-center">
+    <p class="text-gray-400 italic">Aucun cours programmé.</p>
+</div>
+{% endif %}
+</div>
+{% endblock %}

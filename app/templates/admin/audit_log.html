@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Journal d'audit — Administration{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900">Journal d'audit</h1>
+        <p class="mt-1 text-sm text-gray-500">Les 100 entrées les plus récentes.</p>
+    </div>
+
+    <div class="overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Utilisateur</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Action</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Détail</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">IP</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 bg-white">
+                    {% for log in logs %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
+                            {% if log.created_at %}{{ log.created_at }}{% else %}—{% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ log.username or '—' }}</td>
+                        <td class="px-6 py-4 text-sm">
+                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold
+                                {% if log.action == 'LOGIN' %}bg-emerald-100 text-emerald-800
+                                {% elif log.action == 'LOGOUT' %}bg-gray-100 text-gray-700
+                                {% elif log.action == 'USER_CREATE' %}bg-blue-100 text-blue-800
+                                {% elif log.action == 'USER_EDIT' %}bg-indigo-100 text-indigo-800
+                                {% elif log.action == 'USER_DELETE' %}bg-red-100 text-red-800
+                                {% elif log.action == 'PASSWORD_CHANGE' %}bg-amber-100 text-amber-800
+                                {% elif log.action == 'CLASS_CREATE' %}bg-sky-100 text-sky-800
+                                {% elif log.action == 'CLASS_DELETE' %}bg-rose-100 text-rose-800
+                                {% else %}bg-slate-100 text-slate-800{% endif %}">
+                                {{ log.action }}
+                            </span>
+                        </td>
+                        <td class="max-w-md px-6 py-4 text-sm text-gray-600 break-words">{{ log.detail or '—' }}</td>
+                        <td class="whitespace-nowrap px-6 py-4 font-mono text-xs text-gray-500">{{ log.ip_address or '—' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500">Aucune entrée pour le moment.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Attribuer des professeurs — {{ cls.name }}{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-2xl font-bold text-gray-900 mb-2">Attribuer des professeurs</h1>
+    <p class="text-sm text-gray-500 mb-8">Classe : {{ cls.name }}</p>
+
+    <div class="rounded-2xl bg-white p-8 shadow-sm border border-gray-200">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <p class="text-sm text-gray-500 mb-4">Maintenez Ctrl (ou Cmd) pour sélectionner plusieurs professeurs.</p>
+            {{ form.professors(class="block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 sm:text-sm", size=6) }}
+            <div class="mt-8 flex justify-end space-x-3">
+                <a href="{{ url_for('admin.class_detail', class_id=cls.id) }}" class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition">Annuler</a>
+                <button type="submit" class="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}{{ cls.name }} — Professeur{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+<div class="mb-8">
+    <a href="{{ url_for('professor.dashboard') }}" class="text-sm text-gray-500 hover:text-gray-700">&larr; Retour au tableau de bord</a>
+    <h1 class="mt-2 text-2xl font-bold text-gray-900">{{ cls.name }}</h1>
+    <p class="mt-1 text-sm text-gray-500">{{ cls.description or '' }}</p>
+</div>
+
+<div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+    <!-- Étudiants -->
+    <div class="rounded-2xl bg-white shadow-sm border border-gray-200">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Étudiants ({{ students|length }})</h2>
+        </div>
+        <ul class="divide-y divide-gray-100">
+            {% for s in students %}
+            <li class="px-6 py-3 text-sm text-gray-700">{{ s.first_name }} {{ s.last_name }} <span class="text-gray-400">— {{ s.email }}</span></li>
+            {% else %}
+            <li class="px-6 py-4 text-sm text-gray-400 italic">Aucun étudiant.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Matières et évaluations -->
+    <div class="rounded-2xl bg-white shadow-sm border border-gray-200">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Mes matières dans cette classe</h2>
+        </div>
+        <ul class="divide-y divide-gray-100">
+            {% for sub in subjects %}
+            <li class="px-6 py-3">
+                <a href="{{ url_for('professor.evaluations_list', subject_id=sub.id) }}" class="text-sm font-medium text-blue-600 hover:text-blue-800">{{ sub.name }}</a>
+            </li>
+            {% else %}
+            <li class="px-6 py-4 text-sm text-gray-400 italic">Aucune matière.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Emploi du temps -->
+    <div class="rounded-2xl bg-white shadow-sm border border-gray-200 lg:col-span-2">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Mon emploi du temps</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Jour</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Horaire</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Matière</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Salle</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for sc in schedules %}
+                    <tr>
+                        <td class="px-6 py-3 text-sm font-medium text-gray-900">{{ sc.day_of_week }}</td>
+                        <td class="px-6 py-3 text-sm text-gray-700">{{ sc.start_time|format_time }} - {{ sc.end_time|format_time }}</td>
+                        <td class="px-6 py-3 text-sm text-gray-700">{{ sc.subject_name }}</td>
+                        <td class="px-6 py-3 text-sm text-gray-500">{{ sc.room or '-' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" class="px-6 py-4 text-sm text-gray-400 italic">Aucun créneau.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

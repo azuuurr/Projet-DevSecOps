@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Plateforme Académique{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    sans: ['Inter', 'system-ui', 'sans-serif'],
+                },
+            }
+        }
+    }
+    </script>
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); }
+        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+        .card-hover { transition: all 0.2s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -8px rgba(0,0,0,0.15); }
+        .nav-link { position: relative; }
+        .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #3b82f6; transition: width 0.2s ease; }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+    </style>
+</head>
+<body class="h-full bg-gray-50">
+    <div class="min-h-full flex flex-col">
+
+        <!-- NAVBAR -->
+        <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="flex h-16 items-center justify-between">
+                    <!-- Logo -->
+                    <a href="{{ url_for('index') }}" class="flex items-center space-x-2">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
+                            <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342" />
+                            </svg>
+                        </div>
+                        <span class="text-lg font-bold text-gray-900">Académie<span class="text-blue-600">GCS</span></span>
+                    </a>
+
+                    <!-- Navigation Links -->
+                    <div class="hidden sm:flex sm:items-center sm:space-x-1">
+                        {% if current_user.is_authenticated %}
+                            {% if current_user.role == 'admin' %}
+                            <a href="{{ url_for('admin.dashboard') }}" class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %} rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition">Tableau de bord</a>
+                            <a href="{{ url_for('admin.users_list') }}" class="nav-link {% if request.endpoint and 'user' in request.endpoint %}active{% endif %} rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition">Utilisateurs</a>
+                            <a href="{{ url_for('admin.classes_list') }}" class="nav-link {% if request.endpoint and 'class' in request.endpoint %}active{% endif %} rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition">Classes</a>
+                            <a href="{{ url_for('admin.audit_log') }}" class="nav-link {% if request.endpoint == 'admin.audit_log' %}active{% endif %} rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition">Audit</a>
+                            {% elif current_user.role == 'professor' %}
+                            <a href="{{ url_for('professor.dashboard') }}" class="nav-link {% if request.endpoint == 'professor.dashboard' %}active{% endif %} rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition">Tableau de bord</a>
+                            {% elif current_user.role == 'student' %}
+                            <a href="{{ url_for('student.dashboard') }}" class="nav-link {% if request.endpoint == 'student.dashboard' %}active{% endif %} rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition">Tableau de bord</a>
+                            <a href="{{ url_for('student.grades') }}" class="nav-link {% if request.endpoint == 'student.grades' %}active{% endif %} rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition">Mes notes</a>
+                            <a href="{{ url_for('student.schedule') }}" class="nav-link {% if request.endpoint == 'student.schedule' %}active{% endif %} rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition">Emploi du temps</a>
+                            {% endif %}
+                        {% else %}
+                            <a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %} rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition">Accueil</a>
+                            <a href="{{ url_for('auth.login') }}" class="nav-link {% if request.endpoint == 'auth.login' %}active{% endif %} rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition">Connexion</a>
+                        {% endif %}
+                    </div>
+
+                    <!-- Right side: User info / Login -->
+                    <div class="flex items-center space-x-3">
+                        {% if current_user.is_authenticated %}
+                        <div class="hidden sm:flex sm:items-center sm:space-x-3">
+                            <a href="{{ url_for('auth.profile') }}" class="flex items-center space-x-2 rounded-lg px-2 py-1.5 hover:bg-gray-50 transition" title="Mon profil">
+                                <div class="flex h-8 w-8 items-center justify-center rounded-full
+                                    {% if current_user.role == 'admin' %}bg-red-100 text-red-700
+                                    {% elif current_user.role == 'professor' %}bg-blue-100 text-blue-700
+                                    {% else %}bg-emerald-100 text-emerald-700{% endif %} text-xs font-bold">
+                                    {{ current_user.first_name[0] }}{{ current_user.last_name[0] }}
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm font-medium text-gray-900">{{ current_user.full_name }}</p>
+                                    <p class="text-xs text-gray-500">{{ current_user.role | capitalize }}</p>
+                                </div>
+                            </a>
+                            <form method="POST" action="{{ url_for('auth.logout') }}" class="inline">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition" title="Déconnexion">
+                                    <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+                                    Déconnexion
+                                </button>
+                            </form>
+                        </div>
+                        <!-- Mobile menu button -->
+                        <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="sm:hidden inline-flex items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+                        </button>
+                        {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 shadow-sm transition">
+                            Se connecter
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            {% if current_user.is_authenticated %}
+            <div id="mobile-menu" class="hidden sm:hidden border-t border-gray-200 bg-white">
+                <div class="px-4 py-3 space-y-1">
+                    {% if current_user.role == 'admin' %}
+                    <a href="{{ url_for('admin.dashboard') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Tableau de bord</a>
+                    <a href="{{ url_for('admin.users_list') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Utilisateurs</a>
+                    <a href="{{ url_for('admin.classes_list') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Classes</a>
+                    <a href="{{ url_for('admin.audit_log') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Audit</a>
+                    {% elif current_user.role == 'professor' %}
+                    <a href="{{ url_for('professor.dashboard') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Tableau de bord</a>
+                    {% elif current_user.role == 'student' %}
+                    <a href="{{ url_for('student.dashboard') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Tableau de bord</a>
+                    <a href="{{ url_for('student.grades') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Mes notes</a>
+                    <a href="{{ url_for('student.schedule') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Emploi du temps</a>
+                    {% endif %}
+                    <div class="border-t border-gray-100 pt-2 mt-2">
+                        <a href="{{ url_for('auth.profile') }}" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Mon profil</a>
+                        <form method="POST" action="{{ url_for('auth.logout') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="block w-full text-left rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50">Déconnexion</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </nav>
+
+        <!-- Breadcrumbs -->
+        {% block breadcrumbs %}{% endblock %}
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-4">
+            {% for category, message in messages %}
+            <div class="rounded-lg p-4 mb-3 flex items-center space-x-3
+                {% if category == 'success' %}bg-emerald-50 border border-emerald-200
+                {% elif category == 'error' %}bg-red-50 border border-red-200
+                {% elif category == 'warning' %}bg-amber-50 border border-amber-200
+                {% else %}bg-blue-50 border border-blue-200{% endif %}">
+                {% if category == 'success' %}
+                <svg class="h-5 w-5 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                {% elif category == 'error' %}
+                <svg class="h-5 w-5 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
+                {% elif category == 'warning' %}
+                <svg class="h-5 w-5 text-amber-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                {% else %}
+                <svg class="h-5 w-5 text-blue-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>
+                {% endif %}
+                <p class="text-sm font-medium
+                    {% if category == 'success' %}text-emerald-800
+                    {% elif category == 'error' %}text-red-800
+                    {% elif category == 'warning' %}text-amber-800
+                    {% else %}text-blue-800{% endif %}">{{ message }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Main Content -->
+        <main class="flex-1">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer class="border-t border-gray-200 bg-white mt-auto">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+                <div class="flex flex-col sm:flex-row items-center justify-between space-y-2 sm:space-y-0">
+                    <p class="text-sm text-gray-400">Guardia Cybersecurity School &mdash; DevSecOps 2026</p>
+                    <p class="text-xs text-gray-300">Plateforme Académique Sécurisée v1.0</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Accueil — Plateforme Académique Sécurisée{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="gradient-bg">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
+        <div class="text-center">
+            <div class="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-1.5 mb-8">
+                <span class="text-xs font-medium text-blue-300">DevSecOps &mdash; Guardia Cybersecurity School 2026</span>
+            </div>
+            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
+                Plateforme de Gestion<br>
+                <span class="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">Académique Sécurisée</span>
+            </h1>
+            <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-300">
+                Gérez vos classes, notes et emplois du temps en toute sécurité.
+                Application développée selon les principes DevSecOps avec RBAC, CSRF, bcrypt et requêtes paramétrées.
+            </p>
+            <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+                {% if current_user.is_authenticated %}
+                    {% if current_user.role == 'admin' %}
+                    <a href="{{ url_for('admin.dashboard') }}" class="w-full sm:w-auto rounded-lg bg-blue-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg hover:bg-blue-500 transition">
+                        Accéder au tableau de bord
+                    </a>
+                    {% elif current_user.role == 'professor' %}
+                    <a href="{{ url_for('professor.dashboard') }}" class="w-full sm:w-auto rounded-lg bg-blue-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg hover:bg-blue-500 transition">
+                        Accéder au tableau de bord
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('student.dashboard') }}" class="w-full sm:w-auto rounded-lg bg-blue-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg hover:bg-blue-500 transition">
+                        Accéder au tableau de bord
+                    </a>
+                    {% endif %}
+                {% else %}
+                <a href="{{ url_for('auth.login') }}" class="w-full sm:w-auto rounded-lg bg-blue-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg hover:bg-blue-500 transition flex items-center justify-center space-x-2">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" /></svg>
+                    <span>Se connecter</span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
+    <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold text-gray-900">Une plateforme complète et sécurisée</h2>
+        <p class="mt-3 text-gray-500 max-w-xl mx-auto">Conçue pour la gestion académique avec un accent sur la sécurité à chaque niveau.</p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <!-- Feature 1 -->
+        <div class="group rounded-2xl bg-white p-8 shadow-sm border border-gray-100 card-hover">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 group-hover:bg-red-100 transition">
+                <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>
+            </div>
+            <h3 class="mt-6 text-lg font-semibold text-gray-900">Sécurité renforcée</h3>
+            <p class="mt-2 text-sm text-gray-500 leading-relaxed">RBAC strict, protection CSRF, hachage bcrypt, headers HTTP sécurisés et requêtes paramétrées contre les injections SQL.</p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="group rounded-2xl bg-white p-8 shadow-sm border border-gray-100 card-hover">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 group-hover:bg-blue-100 transition">
+                <svg class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342" /></svg>
+            </div>
+            <h3 class="mt-6 text-lg font-semibold text-gray-900">Gestion académique</h3>
+            <p class="mt-2 text-sm text-gray-500 leading-relaxed">Classes, matières, évaluations, notes pondérées et emplois du temps organisés par jour et par créneau horaire.</p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="group rounded-2xl bg-white p-8 shadow-sm border border-gray-100 card-hover">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 group-hover:bg-emerald-100 transition">
+                <svg class="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>
+            </div>
+            <h3 class="mt-6 text-lg font-semibold text-gray-900">3 rôles distincts</h3>
+            <p class="mt-2 text-sm text-gray-500 leading-relaxed">Administrateur, Professeur et Étudiant avec des permissions strictement cloisonnées côté serveur.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Roles Section -->
+<div class="bg-white border-t border-gray-100">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-gray-900">Chaque rôle, ses permissions</h2>
+            <p class="mt-3 text-gray-500">Un contrôle d'accès basé sur les rôles (RBAC) garantit l'isolation des données.</p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div class="rounded-2xl border-2 border-red-100 bg-gradient-to-b from-red-50/50 to-white p-8">
+                <div class="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700 mb-4">Administrateur</div>
+                <ul class="space-y-3 text-sm text-gray-600">
+                    <li class="flex items-start space-x-2"><svg class="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg><span>Créer et gérer les classes</span></li>
+                    <li class="flex items-start space-x-2"><svg class="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg><span>Attribuer étudiants et professeurs</span></li>
+                    <li class="flex items-start space-x-2"><svg class="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg><span>Gérer les emplois du temps</span></li>
+                    <li class="flex items-start space-x-2"><svg class="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg><span>Gérer les comptes utilisateurs</span></li>
+                </ul>
+            </div>
+
+            <div class="rounded-2xl border-2 border-blue-100 bg-gradient-to-b from-blue-50/50 to-white p-8">
+                <div class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700 mb-4">Professeur</div>
+                <ul class="space-y-3 text-sm text-gray-600">
+                    <li class="flex items-start space-x-2"><svg class="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg><span>Consulter ses classes attribuées</span></li>
+                    <li class="flex items-start space-x-2"><svg class="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg><span>Créer des évaluations</span></li>
+                    <li class="flex items-start space-x-2"><svg class="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg><span>Attribuer et modifier les notes</span></li>
+                    <li class="flex items-start space-x-2"><svg class="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg><span>Consulter les emplois du temps</span></li>
+                </ul>
+            </div>
+
+            <div class="rounded-2xl border-2 border-emerald-100 bg-gradient-to-b from-emerald-50/50 to-white p-8">
+                <div class="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 mb-4">Étudiant</div>
+                <ul class="space-y-3 text-sm text-gray-600">
+                    <li class="flex items-start space-x-2"><svg class="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg><span>Consulter ses propres notes</span></li>
+                    <li class="flex items-start space-x-2"><svg class="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg><span>Consulter son emploi du temps</span></li>
+                    <li class="flex items-start space-x-2"><svg class="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg><span>Aucun accès aux données des autres</span></li>
+                    <li class="flex items-start space-x-2"><svg class="h-5 w-5 text-gray-300 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg><span class="text-gray-400">Pas d'accès en écriture</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
